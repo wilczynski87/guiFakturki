@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://thymeleaf.org">
+   <head>
+      <meta charset = "ISO-8859-1" />
+      <link href = "css/styles.css" rel = "stylesheet" type="text/javascript"/>
+      <title>Panel klienta</title>
+      <script type="text/javascript" th:src="@{/js/scripts.js}"></script>
+   </head>
+   <body>
+    <div class="center">
+      <h4>Witamy w panelu klienta!</h4>
+      <button id="myButton" th:onclick="hello()">Hello Button</button>
+      <p id="sayHello"></p>
+      <div sec:authorize="hasRole('USER')">Text visible to user.</div>
+        <div sec:authorize="hasRole('ADMIN')">Text visible to admin.</div>
+        <div sec:authorize="isAuthenticated()">
+            Text visible only to authenticated users.
+        </div>
+        Authenticated username:
+        <div sec:authentication="name"></div>
+        Authenticated user roles:
+        <div sec:authentication="principal.authorities"></div>
+    </div>
+   </body>
+</html>
