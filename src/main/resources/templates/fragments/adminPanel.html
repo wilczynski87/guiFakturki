@@ -1,0 +1,60 @@
+
+<div th:fragment="clientsTable">
+    <div id="clientTableContainer" class="container">
+        <div class="row">
+            <div class="">
+                <table id="clientsTable" class="table table-bordered" style="width: 100%">
+                    <thead>
+                    <tr>
+                        <th>Name: </th>
+                        <th>Nip: </th>
+                        <th>Current invoice issued: </th>
+                        <th>in debt: </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="client : ${clients}">
+                        <td th:text="${client.name}" th:attr="hx-get=|/getClient/${client.nip}|" hx-trigger="click" hx-target="#mainContent">Nazwa</td>
+                        <td th:text="${client.nip}">Nip</td>
+                        <td th:unless="${client.invoice}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-octagon" viewBox="0 0 16 16">
+                            <path d="M4.54.146A.5.5 0 0 1 4.893 0h6.214a.5.5 0 0 1 .353.146l4.394 4.394a.5.5 0 0 1 .146.353v6.214a.5.5 0 0 1-.146.353l-4.394 4.394a.5.5 0 0 1-.353.146H4.893a.5.5 0 0 1-.353-.146L.146 11.46A.5.5 0 0 1 0 11.107V4.893a.5.5 0 0 1 .146-.353L4.54.146zM5.1 1 1 5.1v5.8L5.1 15h5.8l4.1-4.1V5.1L10.9 1H5.1z"/>
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                          </svg></td>
+                        <td th:text="${client.invoice}">Current invoice issued</td>
+                        <td th:unless="${client.inDebt}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-x" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M6.146 7.146a.5.5 0 0 1 .708 0L8 8.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 9l1.147 1.146a.5.5 0 0 1-.708.708L8 9.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 9 6.146 7.854a.5.5 0 0 1 0-.708z"/>
+                            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                          </svg></th:td>
+                        <td th:if="${client.inDebt}" th:text="${client.inDebt}">In debt</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="adminPanel">
+    <div class="container">
+        <button type="button" class="btn btn-primary btn-lg" hx-get="/sendInvoices" hx-trigger="click" hx-target="#clientTableContainer">Send all invoices</button>
+    </div>
+</div>
+
+<th:block th:fragment="navbar">
+    <nav class="navbar navbar-expand-sm bg-light navbar-light">
+        <div class="container-fluid">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/" >Klienci i platnosci</a>
+                </li>
+            <li class="nav-item">
+                    <a class="nav-link" href="#">Klienci</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Fakturki</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</th:block>

@@ -1,25 +1,58 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://thymeleaf.org">
+
    <head>
       <meta charset = "ISO-8859-1" />
-      <link href = "css/styles.css" rel = "stylesheet" type="text/javascript"/>
-      <title>Panel klienta</title>
-      <script type="text/javascript" th:src="@{/js/scripts.js}"></script>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link href = "css/styles.css" rel = "stylesheet" />
+      <title>Logowanie</title>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+      <!-- <script th:src="@{/webjars/bootstrap/5.3.0/js/bootstrap.min.js}" defer></script> -->
+      <!-- Bootstrap Font Icon CSS -->
+      <link rel="stylesheet" href= "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" defer></script>
+      <script th:src="@{/js/scripts.js}" defer></script>
+      <!-- <script type="text/javascript" th:src="@{/webjars/htmx.org/1.9.2/dist/htmx.min.js}" defer></script> -->
+      <script src="https://unpkg.com/htmx.org@1.9.2" 
+            integrity="sha384-L6OqL9pRWyyFU3+/bjdSri+iIphTN/bvYyM37tICVyOJkWZLpP2vGn6VUEXgzg6h" 
+            crossorigin="anonymous"></script>
+      <!-- <script src="/webjars/jquery/jquery.min.js" defer></script> -->
+      <script src="https://code.jquery.com/jquery-3.7.0.js"
+			  integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+			  crossorigin="anonymous"></script>
    </head>
-   <body>
-    <div class="center">
+
+   <body hx-boost="true" class="grid text-center">
+      <input id="hiddenInput" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+      <!-- Navigation bar -->
+      <th:block sec:authorize="hasRole('ADMIN')" th:replace="~{fragments\adminPanel.html :: navbar}"></th:block>
+
+    <div class="shadow-lg p-3 mb-5 bg-body-tertiary rounded card center" style="width: 30%;">
       <h4>Witamy w panelu klienta!</h4>
+      
+      <!-- Wykaz klientów i faktór: -->
+      <div class="" sec:authorize="hasRole('ADMIN')" hx-get="/clientsTable" hx-trigger="load" hx-swap="outerHTML">Clients table:</div>
+
+      <!-- Panel administratora -->
+      <th:block sec:authorize="hasRole('ADMIN')" th:replace="~{fragments\adminPanel.html :: adminPanel}">Admins panel:</th:block>
+
       <button id="myButton" th:onclick="hello()">Hello Button</button>
-      <p id="sayHello"></p>
+      <button id="button2" th:onClick="info()">info in console</button> </br>
+      
+      <button hx-post="/hello" hx-swap="outerHTML">htmx test</button>
+      <p id="sayHello" hx-post="/hello" hx-swap="outerHTML" hx-include="[id='hiddenInput']">ppp</p>
+
       <div sec:authorize="hasRole('USER')">Text visible to user.</div>
-        <div sec:authorize="hasRole('ADMIN')">Text visible to admin.</div>
-        <div sec:authorize="isAuthenticated()">
-            Text visible only to authenticated users.
-        </div>
-        Authenticated username:
-        <div sec:authentication="name"></div>
-        Authenticated user roles:
-        <div sec:authentication="principal.authorities"></div>
+      <div sec:authorize="hasRole('ADMIN')">Text visible to admin.</div>
+      <div sec:authorize="isAuthenticated()">
+         Text visible only to authenticated users.
+      </div>
+      Authenticated username:
+      <div sec:authentication="name"></div>
+      Authenticated user roles:
+      <div sec:authentication="principal.authorities"></div>
     </div>
    </body>
+
 </html>
