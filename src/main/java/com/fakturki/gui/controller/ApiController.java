@@ -22,6 +22,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import com.fakturki.gui.data.Client;
 import com.fakturki.gui.data.ClientTable;
+import com.fakturki.gui.data.Product;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.http.HttpContent;
@@ -93,15 +94,34 @@ public class ApiController {
     }
 
     public Client getClient(String nip) {
-        apiWithTimeout.get()
-            .uri(uriBuilder -> uriBuilder
-                .path("/products/{nip}")
-                .build(nip))
+        Mono<Client> client;
+        var myClient = apiWithTimeout.post()
+            .uri("/getClient/{nip}", nip)
             .retrieve()
             .bodyToMono(Client.class)
-            .subscribe();
+            ;
 
-        return null;
+        return myClient.block();
+    }
+
+    public void sendInvoiceToClient(String nip, String month, String year) {
+        apiWithTimeout.get()
+            .uri(uriBuilder -> uriBuilder
+                .path("/sendInvoiceToClient")
+                .queryParam("nip", "{nip}")
+                .queryParam("month", "{month}")
+                .queryParam("year", "{year}")
+                .build(nip, month, year))
+            .retrieve();
+        ;
     }
     
+    public List<Product> getProductsByClient(String nip) {
+        return apiWithTimeout.post()
+            .uri("/getProductsByClient/{nip}", nip)
+            .retrieve()
+            .bodyToFlux(Product.class)
+            .collectList()
+            .block();
+    }
 }

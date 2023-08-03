@@ -57,9 +57,11 @@ public class MainView {
     }
 
     @GetMapping("/getClient/{nip}")
-    public String getClient(@PathVariable String nip, Model model) {
+    public String getClient(@PathVariable("nip") String nip, Model model) {
         log.info("\n\n/getClient/{nip} has been hit: nip is: " + nip);
-        // model.addAttribute("client", apiController.getClient(nip));
+        model.addAttribute("client", apiController.getClient(nip));
+        model.addAttribute("products", apiController.getProductsByClient(nip));
+        System.out.println(apiController.getProductsByClient(nip));
         return "fragments/client :: client";
     }
 

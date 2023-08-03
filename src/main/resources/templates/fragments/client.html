@@ -2,37 +2,37 @@
     <form class="form-floating row bg-3">
         <div class="col-md-11">
             <div class="form-outline">
-            <input type="text" class="form-control" id="NazwaBox" value="Mark" required />
+            <input type="text" class="form-control" id="NazwaBox" th:value="${client?.name}" placeholder="Nazwa..." required />
             <label for="NazwaBox" class="form-label">Nazwa</label>
             </div>
         </div>
         <div class="col-md-1">
             <div class="input-group form-outline">
-                <input type="checkbox" class="form-check-input" id="isActiveBox" aria-describedby="inputGroupPrepend2" value="yes" checked required />
+                <input type="checkbox" class="form-check-input" id="isActiveBox" aria-describedby="inputGroupPrepend2" th:value="${client?.active}" checked required />
                 <label for="isActiveBox" class="form-label">Aktywny</label>
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-outline">
-                <input type="text" class="form-control" id="ktoDoKontaktuBox" value="Otto" required />
+                <input type="text" class="form-control" id="ktoDoKontaktuBox" value="" placeholder="Osoba do kontaktu..." required />
                 <label for="ktoDoKontaktuBox" class="form-label">Osoba do kontaktu</label>
             </div>
         </div>
         <div class="col-12">
             <div class="form-outline">
-                <input type="text" class="form-control" id="addressBox" value="Grabiszyńska 279/14, Wrocław 53-234" required />
+                <input type="text" class="form-control" id="addressBox" th:value="${client?.address}" placeholder="adres..." required />
                 <label for="addressBox" class="">adres</label>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-outline">
-                <input type="text" class="form-control" id="nipBox" value="1234567890" required />
+                <input type="text" class="form-control" id="nipBox" th:value="${nip}" placeholder="Nip..." required />
                 <label for="nipBox" class="form-label">Nip</label>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-outline">
-                <input type="text" class="form-control" id="emailBox" value="exampleemal@gmail.com" required />
+                <input type="text" class="form-control" id="emailBox" th:value="${client?.email}" placeholder="email..." required />
                 <label for="emailBox" class="form-label">email</label>
             </div>
         </div>
@@ -41,3 +41,5 @@
         </div>
     </form>
 </div>
+
+

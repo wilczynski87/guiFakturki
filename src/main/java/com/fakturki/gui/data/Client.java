@@ -2,8 +2,6 @@ package com.fakturki.gui.data;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 
 @Data
