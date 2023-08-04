@@ -40,6 +40,38 @@
             <button class="btn btn-primary" type="submit">uaktualnij dane</button>
         </div>
     </form>
+    <th:block th:replace="~{fragments\client.html :: clientProducts}"></th:block>
+</div>
+
+<div th:fragment="clientProducts">
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Produkt</th>
+            <th scope="col">Cena j.netto</th>
+            <th scope="col">Ilość</th>
+            <th scope="col">Stawka Vat</th>
+            <th scope="col">Vat</th>
+            <th scope="col">Cena netto</th>
+            <th scope="col">Cena brutto</th>
+            <th scope="col">Edytuj</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="product : ${products}">
+            <th scope="row" th:text="${products.indexOf(product)} + 1"></th>
+            <td th:text="${product.productEnum}"></td>
+            <td th:text="${product.unitPrice}"></td>
+            <td th:text="${product.quantity}"></td>
+            <td th:text="${product.vatRate}"></td>
+            <td th:text="${product.vatAmout}"></td>
+            <td th:text="${product.price}"></td>
+            <td th:text="${product.priceWithVat}"></td>
+            <td><button type="button" class="btn btn-primary btn-sm">edytuj</button></td>
+          </tr>
+        </tbody>
+      </table>
 </div>
 
 
