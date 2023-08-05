@@ -22,6 +22,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import com.fakturki.gui.data.Client;
 import com.fakturki.gui.data.ClientTable;
+import com.fakturki.gui.data.Invoice;
 import com.fakturki.gui.data.Product;
 
 import io.netty.channel.ChannelOption;
@@ -113,7 +114,6 @@ public class ApiController {
                 .queryParam("year", "{year}")
                 .build(nip, month, year))
             .retrieve();
-        ;
     }
     
     public List<Product> getProductsByClient(String nip) {
@@ -121,6 +121,15 @@ public class ApiController {
             .uri("/getProductsByClient/{nip}", nip)
             .retrieve()
             .bodyToFlux(Product.class)
+            .collectList()
+            .block();
+    }
+
+    public List<Invoice> getInvoicesByNip(String nip) {
+        return apiWithTimeout.post()
+            .uri("/getInvoicesByNip/{nip}", nip)
+            .retrieve()
+            .bodyToFlux(Invoice.class)
             .collectList()
             .block();
     }

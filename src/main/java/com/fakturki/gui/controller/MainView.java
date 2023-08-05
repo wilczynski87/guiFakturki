@@ -61,9 +61,15 @@ public class MainView {
         log.info("\n\n/getClient/{nip} has been hit: nip is: " + nip);
         model.addAttribute("client", apiController.getClient(nip));
         model.addAttribute("products", apiController.getProductsByClient(nip));
+        model.addAttribute("invoices", apiController.getInvoicesByNip(nip));
         System.out.println(apiController.getProductsByClient(nip));
         return "fragments/client :: client";
     }
 
+    @GetMapping("addClient")
+    public String addClient(Model model) {
+        model.addAttribute("addClient", true);
+        return "fragments/client :: client"; 
+    }
     
 }

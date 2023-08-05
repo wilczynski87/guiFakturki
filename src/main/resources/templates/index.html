@@ -28,7 +28,7 @@
       <!-- Navigation bar -->
       <th:block sec:authorize="hasRole('ADMIN')" th:replace="~{fragments\adminPanel.html :: navbar}"></th:block>
 
-      <div id="mainContent" class="shadow-lg p-3 mb-5 bg-body-tertiary rounded card center" style="width: 30%;">
+      <div id="mainContent" class="shadow-lg p-3 mb-5 bg-body-tertiary rounded card center">
          <h4>Witamy w panelu klienta!</h4>
          
          <!-- Wykaz klientów i faktór: -->
@@ -39,9 +39,10 @@
           </button></div>
 
          <!-- Panel administratora -->
-         <th:block sec:authorize="hasRole('ADMIN')" th:replace="~{fragments\adminPanel.html :: adminPanel}">Admins panel:</th:block>
+         <!-- <th:block sec:authorize="hasRole('ADMIN')" th:replace="~{fragments\adminPanel.html :: adminPanel}">Admins panel:</th:block> -->
 
-         <th:block th:replace="~{fragments\client.html :: client}"></th:block>
+         <!-- <th:block th:replace="~{fragments\client.html :: client}"></th:block> -->
+
       </div>
    </body>
 

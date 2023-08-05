@@ -1,49 +1,57 @@
 <div class="container p-5 my-5 border" th:fragment="client">
-    <form class="form-floating row bg-3">
+    <form class="form-floating row bg-3" hx-post="/submitClient">
         <div class="col-md-11">
             <div class="form-outline">
-            <input type="text" class="form-control" id="NazwaBox" th:value="${client?.name}" placeholder="Nazwa..." required />
+            <input type="text" class="form-control" id="NazwaBox" name="name" th:value="${client?.name}" placeholder="Nazwa..." required />
             <label for="NazwaBox" class="form-label">Nazwa</label>
             </div>
         </div>
         <div class="col-md-1">
             <div class="input-group form-outline">
-                <input type="checkbox" class="form-check-input" id="isActiveBox" aria-describedby="inputGroupPrepend2" th:value="${client?.active}" checked required />
+                <input type="checkbox" class="form-check-input" id="isActiveBox" name="active" aria-describedby="inputGroupPrepend2" th:value="${client?.active}" checked required />
                 <label for="isActiveBox" class="form-label">Aktywny</label>
             </div>
         </div>
         <div class="col-md-12">
             <div class="form-outline">
-                <input type="text" class="form-control" id="ktoDoKontaktuBox" value="" placeholder="Osoba do kontaktu..." required />
+                <input type="text" class="form-control" id="ktoDoKontaktuBox" name="personToContact" value="" placeholder="Osoba do kontaktu..." required />
                 <label for="ktoDoKontaktuBox" class="form-label">Osoba do kontaktu</label>
             </div>
         </div>
         <div class="col-12">
             <div class="form-outline">
-                <input type="text" class="form-control" id="addressBox" th:value="${client?.address}" placeholder="adres..." required />
+                <input type="text" class="form-control" id="addressBox" name="address" th:value="${client?.address}" placeholder="adres..." required />
                 <label for="addressBox" class="">adres</label>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-outline">
-                <input type="text" class="form-control" id="nipBox" th:value="${nip}" placeholder="Nip..." required />
+                <input type="text" class="form-control" id="nipBox" name="nip" th:value="${nip}" placeholder="Nip..." required />
                 <label for="nipBox" class="form-label">Nip</label>
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-outline">
-                <input type="text" class="form-control" id="emailBox" th:value="${client?.email}" placeholder="email..." required />
+                <input type="text" class="form-control" id="emailBox" name="email" th:value="${client?.email}" placeholder="email..." required />
                 <label for="emailBox" class="form-label">email</label>
             </div>
         </div>
         <div class="col-12">
-            <button class="btn btn-primary" type="submit">uaktualnij dane</button>
+            <input class="btn btn-primary" type="submit" value="uaktualnij dane" />
         </div>
     </form>
-    <th:block th:replace="~{fragments\client.html :: clientProducts}"></th:block>
+
+    <div id="clientProductsTable" th:unless="${addClient}">
+        <th:block th:replace="~{fragments\client.html :: clientProducts}"></th:block>
+    </div>
+    
+    <div id="clientFakturyTable" th:unless="${addClient}">
+        <th:block th:replace="~{fragments\client.html :: clientFaktury}"></th:block>
+    </div>
+
 </div>
 
-<div th:fragment="clientProducts">
+<div th:fragment="clientProducts" class="table-responsive">
     <table class="table table-hover">
         <thead>
           <tr>
@@ -72,6 +80,31 @@
           </tr>
         </tbody>
       </table>
+</div>
+
+<div th:fragment="clientFaktury" class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Numer</th>
+            <th scope="col">Data wystawienia</th>
+            <th scope="col">Cena brutto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="faktura : ${invoices}">
+            <th scope="row" th:text="${invoices.indexOf(faktura)} + 1"></th>
+            <td th:text="${faktura.number}"></td>
+            <td th:text="${faktura.date}"></td>
+            <td th:text="${faktura.priceWithTax}"></td>
+          </tr>
+        </tbody>
+    </table>
+      
+    <div class="">
+        <button class="btn btn-primary" type="submit">wyślij fakturę</button>
+    </div>
 </div>
 
 
