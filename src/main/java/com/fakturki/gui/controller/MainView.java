@@ -1,13 +1,16 @@
 package com.fakturki.gui.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.fakturki.gui.data.ClientTable;
+import com.fakturki.gui.data.Client;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -69,7 +72,20 @@ public class MainView {
     @GetMapping("addClient")
     public String addClient(Model model) {
         model.addAttribute("addClient", true);
+        model.addAttribute("client", new Client());
         return "fragments/client :: client"; 
+    }
+
+    @PostMapping(value = "/submitClient")
+    public String submitClient(Client client, Model model) {
+        var result = apiController.saveNewClient(client, true);
+        model.addAttribute("response", result);
+        
+        if(result.equals("Client already exists!")) {
+            return "fragments/popups :: clientStatusResultExist";
+        } else {
+            return "fragments/popups :: clientStatusResultSaved";
+        }
     }
     
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import org.springframework.core.ParameterizedTypeReference;
@@ -132,5 +133,26 @@ public class ApiController {
             .bodyToFlux(Invoice.class)
             .collectList()
             .block();
+    }
+
+    public String saveNewClient(Client client, boolean isNew) {
+        var result = 
+        apiWithTimeout.post()
+            .uri("/saveClient")
+            .bodyValue(client)
+            .exchangeToMono(response -> {
+                if (response.statusCode().equals(HttpStatus.OK)) {
+                    return response.bodyToMono(String.class);
+                } else if (response.statusCode().is4xxClientError()) {
+                    return Mono.just("Client Error");
+                } else if (response.statusCode().is5xxServerError()) {
+                    return Mono.just("Server Error");
+                } else {
+                    return Mono.just("Other Error");
+                }
+            })
+            .block()
+            ;
+            return result;
     }
 }

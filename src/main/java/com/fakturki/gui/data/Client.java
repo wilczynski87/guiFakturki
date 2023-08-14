@@ -13,5 +13,6 @@ public class Client {
 	private String email;
 	private boolean active;
     private List<Product> products;
-
+	
+	private String personToContact;
 }

@@ -1,5 +1,16 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head> 
+    <title>Getting Started: Handling Form Submission</title>
+    <!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> -->
+</head>
+<body>
 <div class="container p-5 my-5 border" th:fragment="client">
-    <form class="form-floating row bg-3" hx-post="/submitClient">
+    <form class="form-floating row bg-3" th:object="${client}" name="client"
+      hx-target="#modalSwap"
+      hx-post="/submitClient"  
+      hx-swap="outerHTML">
+
         <div class="col-md-11">
             <div class="form-outline">
             <input type="text" class="form-control" id="NazwaBox" name="name" th:value="${client?.name}" placeholder="Nazwa..." required />
@@ -8,7 +19,7 @@
         </div>
         <div class="col-md-1">
             <div class="input-group form-outline">
-                <input type="checkbox" class="form-check-input" id="isActiveBox" name="active" aria-describedby="inputGroupPrepend2" th:value="${client?.active}" checked required />
+                <input type="checkbox" class="form-check-input" id="isActiveBox" name="active" aria-describedby="inputGroupPrepend2" th:value="${client?.active}" checked />
                 <label for="isActiveBox" class="form-label">Aktywny</label>
             </div>
         </div>
@@ -36,10 +47,16 @@
                 <label for="emailBox" class="form-label">email</label>
             </div>
         </div>
+        <input id="hiddenInput" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <div class="col-12">
-            <input class="btn btn-primary" type="submit" value="uaktualnij dane" />
+            <input class="btn btn-primary" type="submit" value="uaktualnij dane"  
+              data-bs-toggle="modal" 
+              data-bs-target="#clientStatusModal" 
+            />
         </div>
     </form>
+
+    <th:block th:replace="~{fragments\popups :: clientStatus}"></th:block>
 
     <div id="clientProductsTable" th:unless="${addClient}">
         <th:block th:replace="~{fragments\client.html :: clientProducts}"></th:block>
@@ -106,5 +123,9 @@
         <button class="btn btn-primary" type="submit">wyślij fakturę</button>
     </div>
 </div>
-
-
+<script th:inline="javascript">
+  var myModal = new bootstrap.Modal(document.getElementById('exampleModal'))
+  myModal.show()
+</script>
+</body>
+</html>

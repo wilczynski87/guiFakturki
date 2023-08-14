@@ -1,0 +1,24 @@
+
+<div th:fragment="clientStatus" class="modal fade" id="clientStatusModal" tabindex="-1" aria-labelledby="clientStatus" aria-hidden="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div id="modalSwap">
+          <h1 class="modal-title badge bg-success" id="statusOfClient">Client status: </h1>
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<th:block th:fragment="clientStatusResultSaved">
+  <h1 class="modal-title badge bg-success" id="statusOfClient" th:text="${response}"></h1>
+</th:block>
+
+<th:block th:fragment="clientStatusResultExist">
+  <h1 class="modal-title badge bg-warning" id="statusOfClient" th:text="${response}"></h1>
+</th:block>
