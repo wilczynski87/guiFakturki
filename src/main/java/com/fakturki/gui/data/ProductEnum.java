@@ -16,4 +16,8 @@ public enum ProductEnum {
         this.jm = jm;
         this.description = description;
     }
+
+    public String getDescription() {
+        return this.description;
+    }
 }

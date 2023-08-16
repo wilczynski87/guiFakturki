@@ -136,8 +136,7 @@ public class ApiController {
     }
 
     public String saveNewClient(Client client, boolean isNew) {
-        var result = 
-        apiWithTimeout.post()
+        return apiWithTimeout.post()
             .uri("/saveClient")
             .bodyValue(client)
             .exchangeToMono(response -> {
@@ -153,6 +152,26 @@ public class ApiController {
             })
             .block()
             ;
-            return result;
+    }
+
+    public String addNewProduct(Product product) {
+        record ProductDto(String clientNip, String productDesc, float unitPrice, float quantity, int vatRate) {}
+        var productDto = new ProductDto(product.getNip(), product.getProductEnum().toString(), product.getUnitPrice().floatValue(), product.getQuantity().floatValue(), product.getVatRate());
+
+        return apiWithTimeout.post()
+            .uri("/saveProductTemplate")
+            .bodyValue(productDto)
+            .exchangeToMono(response -> {
+                if (response.statusCode().equals(HttpStatus.OK)) {
+                    return response.bodyToMono(String.class);
+                } else if (response.statusCode().is4xxClientError()) {
+                    return Mono.just("Product Error");
+                } else if (response.statusCode().is5xxServerError()) {
+                    return Mono.just("Server Error");
+                } else {
+                    return Mono.just("Other Error");
+                }
+            }).block();
+        // return null;
     }
 }

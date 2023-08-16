@@ -1,0 +1,64 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript"></script>
+</head>
+<body> -->
+
+    <div class="container p-5 my-5 border" th:fragment="addProduct" id="addProduct">
+        <div id="clientProductsTable">
+            <th:block th:replace="~{fragments\client.html :: clientProducts}"></th:block>
+        </div>
+
+        <form class="form-floating row bg-3" th:object="${product}" name="newProduct"
+          hx-target="#mainContent"
+          hx-post="/addNewProduct"
+          >
+    
+            <div class="col-md-10">
+                <div class="form-outline">
+                <!-- <input type="text" class="form-control" id="productEnum" name="name" th:value="${productEnum}" placeholder="Nazwa..." required /> -->
+                <select class="form-select" aria-label="product name" name="ProductEnum">
+                    <option selected>Choose product type: </option>
+                    <option th:each="productName : ${productNames}" th:value="${productName}" th:text="${productName.getDescription()}"></option>
+                </select>
+                <label for="name" class="form-label">Nazwa: </label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-outline">
+                    <input type="text" class="form-control" id="ktoDoKontaktuBox" name="measure" value="" placeholder="Jednosta miary..." disabled/>
+                    <label for="measure" class="form-label">Jednosta miary:</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-outline">
+                    <input type="number" class="form-control" id="quantity" name="quantity" th:value="${quantity}" placeholder="ilość..." required />
+                    <label for="quantity" class="">Ilość: </label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-outline">
+                    <input type="number" class="form-control" id="vatRate" name="vatRate" th:value="${vatRate}" placeholder="vatRate"  />
+                    <label for="vatRate" class="form-label">Stawka VAT: </label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-outline">
+                    <input type="number" class="form-control" id="unitPrice" name="unitPrice" th:value="${priceWithVat}" placeholder="cena netto jednostki..." />
+                    <label for="unitPrice" class="form-label">Cena Netto Jednostki</label>
+                </div>
+            </div>
+            <input id="hiddenInput" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input id="hiddenInput" type="hidden" th:name="nip" th:value="${clientNip}" />
+            <div class="col-12">
+                <input class="btn btn-primary" type="submit" value="Dodaj Product"/>
+            </div>
+        </form>
+    
+    </div>
+
+<!-- </body>
+</html> -->

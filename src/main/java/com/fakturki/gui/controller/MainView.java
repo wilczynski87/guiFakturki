@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.fakturki.gui.data.Client;
+import com.fakturki.gui.data.Product;
+import com.fakturki.gui.data.ProductEnum;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,11 +63,11 @@ public class MainView {
 
     @GetMapping("/getClient/{nip}")
     public String getClient(@PathVariable("nip") String nip, Model model) {
-        log.info("\n\n/getClient/{nip} has been hit: nip is: " + nip);
+        // log.info("\n\n/getClient/{nip} has been hit: nip is: " + nip);
         model.addAttribute("client", apiController.getClient(nip));
         model.addAttribute("products", apiController.getProductsByClient(nip));
         model.addAttribute("invoices", apiController.getInvoicesByNip(nip));
-        System.out.println(apiController.getProductsByClient(nip));
+        // System.out.println(apiController.getProductsByClient(nip));
         return "fragments/client :: client";
     }
 
@@ -80,12 +82,42 @@ public class MainView {
     public String submitClient(Client client, Model model) {
         var result = apiController.saveNewClient(client, true);
         model.addAttribute("response", result);
-        
+
         if(result.equals("Client already exists!")) {
             return "fragments/popups :: clientStatusResultExist";
         } else {
             return "fragments/popups :: clientStatusResultSaved";
         }
+    }
+
+    @GetMapping("addProduct/{nip}")
+    public String addProduct(@PathVariable String nip, Model model) {
+        model.addAttribute("productNames", ProductEnum.values());
+        model.addAttribute("products", apiController.getProductsByClient(nip));
+        model.addAttribute("addProduct", true);
+        model.addAttribute("product", new Product());
+        model.addAttribute("clientNip", nip);
+        // System.out.println("adding product: " + model.getAttribute("product"));
+        return "fragments/product :: addProduct"; 
+    }
+
+    @PostMapping(value = "/addNewProduct")
+    public String submitProduct(Product product, Model model) {
+        // var result = apiController.addNewProduct(product);
+        // System.out.println("\n");
+        // System.out.println("nip: " + product.getNip());
+        // System.out.println(apiController.getProductsByClient(product.getNip()));
+        // System.out.println("product: " + product);
+        // System.out.println("\n");
+        model.addAttribute("isProductSaved", apiController.addNewProduct(product));
+        model.addAttribute("productNames", ProductEnum.values());
+        model.addAttribute("products", apiController.getProductsByClient(product.getNip()));
+        model.addAttribute("addProduct", true);
+        model.addAttribute("clientNip", product.getNip());
+        model.addAttribute("product", new Product());
+        // model.addAttribute("response", result);
+
+        return "fragments/product :: addProduct"; 
     }
     
 }

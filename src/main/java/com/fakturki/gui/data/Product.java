@@ -13,4 +13,5 @@ public class Product {
     private BigDecimal vatAmout;
     private BigDecimal price;
     private BigDecimal priceWithVat;
+    private String nip;
 }
