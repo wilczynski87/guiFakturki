@@ -57,6 +57,12 @@
                 <input class="btn btn-primary" type="submit" value="Dodaj Product"/>
             </div>
         </form>
+
+        <div th:if="${isProductSaved}" th:class="${'alert alert-' + alertSeverity + ' alert-dismissible'}" role="alert">
+            <div th:text="${isProductSaved}">alert message</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
     
     </div>
 

@@ -97,25 +97,22 @@ public class MainView {
         model.addAttribute("addProduct", true);
         model.addAttribute("product", new Product());
         model.addAttribute("clientNip", nip);
-        // System.out.println("adding product: " + model.getAttribute("product"));
         return "fragments/product :: addProduct"; 
     }
 
     @PostMapping(value = "/addNewProduct")
     public String submitProduct(Product product, Model model) {
-        // var result = apiController.addNewProduct(product);
-        // System.out.println("\n");
-        // System.out.println("nip: " + product.getNip());
-        // System.out.println(apiController.getProductsByClient(product.getNip()));
-        // System.out.println("product: " + product);
-        // System.out.println("\n");
-        model.addAttribute("isProductSaved", apiController.addNewProduct(product));
+        var result = apiController.addNewProduct(product);
+        model.addAttribute("isProductSaved", result);
         model.addAttribute("productNames", ProductEnum.values());
         model.addAttribute("products", apiController.getProductsByClient(product.getNip()));
         model.addAttribute("addProduct", true);
         model.addAttribute("clientNip", product.getNip());
         model.addAttribute("product", new Product());
-        // model.addAttribute("response", result);
+
+        if(result.equals("Product Saved!")) {
+            model.addAttribute("alertSeverity", "success");
+        } else model.addAttribute("alertSeverity", "danger");
 
         return "fragments/product :: addProduct"; 
     }
