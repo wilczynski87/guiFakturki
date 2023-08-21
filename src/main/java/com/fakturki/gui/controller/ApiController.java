@@ -25,6 +25,8 @@ import com.fakturki.gui.data.Client;
 import com.fakturki.gui.data.ClientTable;
 import com.fakturki.gui.data.Invoice;
 import com.fakturki.gui.data.Product;
+import com.fakturki.gui.data.ProductEnum;
+import com.fakturki.gui.data.UtilityReading;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.http.HttpContent;
@@ -172,5 +174,27 @@ public class ApiController {
                     return Mono.just("Other Error");
                 }
             }).block();
+    }
+
+    public UtilityReading getLastReading(String nip, ProductEnum product) {
+        
+        return apiWithTimeout.post()
+            .uri("/getLastReadingForNip/{nip}/{product}", nip, product)
+            .exchangeToMono(response -> {
+                if (response.statusCode().equals(HttpStatus.OK)) {
+                    return response.bodyToMono(UtilityReading.class);
+                } else if (response.statusCode().is4xxClientError()) {
+                    return Mono.just(new UtilityReading());
+                } else if (response.statusCode().is5xxServerError()) {
+                    return Mono.just(new UtilityReading());
+                } else {
+                    return Mono.just(new UtilityReading());
+                }
+            }).block();
+        // return null;
+    }
+    public List<UtilityReading> getLastReadings(String nip) {
+        var utilityList = List.of(ProductEnum.PRAD, ProductEnum.WODA);
+        return utilityList.stream().map(product -> getLastReading(nip, product)).filter(reading -> reading.getId() != null).toList();
     }
 }

@@ -7,7 +7,9 @@ public enum ProductEnum {
     MIEJSCE_NACZEPA("szt","Miejsce postojowe dla naczepy"),
     MIEJSCE_OSOBOWKA("szt","Miejsce postojowe dla samochodu 3,5t"),
     MIEJSCE_KONTENER_6("szt","Miejsce postojowe dla konteneru 6m"),
-    MIEJSCE_KONTENER_12("szt","Miejsce postojowe dla konteneru 12m");
+    MIEJSCE_KONTENER_12("szt","Miejsce postojowe dla konteneru 12m"),
+    PRAD("kWh", "Energia elektryczna"),
+    WODA("m3", "Woda");
 
     private final String jm;
     private final String description;

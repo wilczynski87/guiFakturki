@@ -1,5 +1,7 @@
 package com.fakturki.gui.controller;
 
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.fakturki.gui.data.Client;
 import com.fakturki.gui.data.Product;
 import com.fakturki.gui.data.ProductEnum;
+import com.fakturki.gui.data.UtilityReading;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -115,6 +118,19 @@ public class MainView {
         } else model.addAttribute("alertSeverity", "danger");
 
         return "fragments/product :: addProduct"; 
+    }
+
+    @GetMapping("getUtility/{nip}")
+    public String getUtility(@PathVariable String nip, Model model) {
+        model.addAttribute("clientNip", nip);
+        model.addAttribute("lastReadings", apiController.getLastReadings(nip));
+        return "fragments/product :: addUtilityReading"; 
+    }
+
+    @PostMapping("/submitReadings")
+    public String submitReadings(List<UtilityReading> utilityReadings) {
+        System.out.println(utilityReadings);
+        return "fragments/product :: addUtilityReading"; 
     }
     
 }

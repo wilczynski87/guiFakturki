@@ -15,4 +15,11 @@ public class Invoice {
     private BigDecimal price;
     private BigDecimal priceWithTax;
     private List<Product> product;
+
+    public static int getStandartTaxRate(ProductEnum product) {
+        return switch (product) {
+            case WODA -> 8;
+            default -> 23;
+        };
+}
 }

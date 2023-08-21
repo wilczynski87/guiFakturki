@@ -125,12 +125,12 @@
     </table>
       
     <div class="">
-        <button class="btn btn-primary" type="submit">wyślij fakturę</button>
+        <button class="btn btn-primary" type="submit">wyślij fakturę czynszową</button>
+        <button class="btn btn-primary" type="submit" 
+          th:attr="hx-get=|/getUtility/${client?.nip}|"
+          hx-target="#mainContent"
+          >wyślij fakturę za media</button>
     </div>
 </div>
-<script th:inline="javascript">
-  var myModal = new bootstrap.Modal(document.getElementById('exampleModal'))
-  myModal.show()
-</script>
 </body>
 </html>

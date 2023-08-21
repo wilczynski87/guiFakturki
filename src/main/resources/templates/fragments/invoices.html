@@ -1,1 +1,52 @@
-<h1>DUPAAAAAAAA!</h1>
+<!-- Template invoice utylities -->
+<div class="container p-5 my-5 border" th:fragment="invoiceUtylities" id="invoiceUtylities">
+    <form class="form-floating row bg-3" th:object="${utility}" name="client"
+        hx-target="#mainContent"
+        hx-post="/getUtility">
+
+        <div class="col-md-11">
+            <div class="form-outline">
+            <input type="text" class="form-control" id="NazwaBox" name="name" th:value="${client?.name}" placeholder="Nazwa..." disabled />
+            <label for="NazwaBox" class="form-label">Nazwa</label>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="input-group form-outline">
+                <input type="checkbox" class="form-check-input" id="isActiveBox" name="active" aria-describedby="inputGroupPrepend2" th:value="${client?.active}" checked />
+                <label for="isActiveBox" class="form-label">Aktywny</label>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-outline">
+                <input type="text" class="form-control" id="ktoDoKontaktuBox" name="personToContact" value="" placeholder="Osoba do kontaktu..." required />
+                <label for="ktoDoKontaktuBox" class="form-label">Osoba do kontaktu</label>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-outline">
+                <input type="text" class="form-control" id="addressBox" name="address" th:value="${client?.address}" placeholder="adres..." required />
+                <label for="addressBox" class="">adres</label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-outline">
+                <input type="text" class="form-control" id="nipBox" name="nip" th:value="${nip}" placeholder="Nip..." required />
+                <label for="nipBox" class="form-label">Nip</label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-outline">
+                <input type="text" class="form-control" id="emailBox" name="email" th:value="${client?.email}" placeholder="email..." required />
+                <label for="emailBox" class="form-label">email</label>
+            </div>
+        </div>
+        <input id="hiddenInput" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <div class="col-12">
+            <input class="btn btn-primary" type="submit" value="uaktualnij dane"  
+                data-bs-toggle="modal" 
+                data-bs-target="#clientStatusModal" 
+            />
+        </div>
+    </form>
+
+</div>
