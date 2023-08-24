@@ -67,60 +67,68 @@
     </div>
 
     <div class="container p-5 my-5 border" th:fragment="addUtilityReading" id="addUtilityReading">
-        <!-- <div id="clientProductsTable">
-            <th:block th:replace="~{fragments\client.html :: clientProducts}"></th:block>
-        </div> -->
+        <div id="clientFaktury">
+            <th:block th:replace="~{fragments\client.html :: clientFaktury}"></th:block>
+        </div>
 
-        <form class="form-floating row bg-3" name="newProduct"
-          hx-target="#mainContent"
-          hx-post="/submitReadings"
-          >
-            <th:block th:each="lastReading : ${lastReadings}">
-                <div class="col-md-12">
-                    <div class="form-outline">
-                        <h3 th:text="${lastReading?.getUtility().getDescription()}">Nazwa: </h3>
+        <th:block th:each="lastReading : ${lastReadings}">
+            <form class="form-floating row bg-3" name="newProduct"
+            hx-target="#mainContent"
+            hx-post="/submitReadings"
+            >
+                
+                    <div class="col-md-12">
+                        <div class="form-outline">
+                            <h3 th:text="${lastReading?.getUtility().getDescription()}">Nazwa: </h3>
+                        </div>
                     </div>
-                </div>
-                <input type="hidden" name="utility" th:value="${lastReading.getUtility()}">
-                <input type="hidden" name="clientNip" th:value="${clientNip}">
-                <div class="col-sm-3">
-                    <div class="form-outline">
-                        <input type="date" class="form-control" name="lastDate" th:value="${lastReading?.getReadingDate()}" placeholder="data ostatniego pomiaru" disabled />
-                        <label for="lastDate" class="">Data ostatniego pomiaru: </label>
+                    <input type="hidden" name="utility" th:value="${lastReading.getUtility()}">
+                    <input type="hidden" name="clientNip" th:value="${clientNip}">
+                    <div class="col-sm-3">
+                        <div class="form-outline">
+                            <input type="date" class="form-control" name="lastDate" th:value="${lastReading?.getReadingDate()}" placeholder="data ostatniego pomiaru" disabled />
+                            <label for="lastDate" class="">Data ostatniego pomiaru: </label>
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-outline">
-                        <input type="number" class="form-control" name="lastReading" th:value="${lastReading?.getReading()}" placeholder="ilość..." disabled />
-                        <label for="lastReading" class="">Ostatni pomiar:</label>
+                    <div class="col-sm-3">
+                        <div class="form-outline">
+                            <input type="number" class="form-control" name="lastReading" th:value="${lastReading?.getReading()}" placeholder="ilość..." disabled />
+                            <label for="lastReading" class="">Ostatni pomiar:</label>
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-outline">
-                        <input type="number" class="form-control" name="reading" placeholder="ilość..."/>
-                        <label for="reading" class="">Bierzący pomiar: </label>
+                    <div class="col-sm-3">
+                        <div class="form-outline">
+                            <input type="number" class="form-control" name="reading" placeholder="ilość..."/>
+                            <label for="reading" class="">Bierzący pomiar: </label>
+                        </div>
                     </div>
-                </div>
-                <br>
-                <div class="col-sm-3">
-                    <div class="form-outline">
-                        <input type="number" class="form-control" name="price" th:value="${lastReading?.getPrice()}" placeholder="ostatnia cena..." disabled/>
-                        <label for="unitPrice" class="form-label">Ostatnia cena za jednostkę</label>
+                    <br>
+                    <div class="col-sm-3">
+                        <div class="form-outline">
+                            <input type="number" class="form-control" name="price" th:value="${lastReading?.getPrice()}" placeholder="ostatnia cena..." disabled/>
+                            <label for="unitPrice" class="form-label">Ostatnia cena za jednostkę</label>
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-outline">
-                        <input type="number" class="form-control" name="price" th:value="${lastReading?.getPrice()}" placeholder="cena netto jednostki..." />
-                        <label for="unitPrice" class="form-label">Cena Netto Jednostki</label>
+                    <div class="col-sm-3">
+                        <div class="form-outline">
+                            <input type="number" class="form-control" name="price" th:value="${lastReading?.getPrice()}" placeholder="cena netto jednostki..." />
+                            <label for="unitPrice" class="form-label">Cena Netto Jednostki</label>
+                        </div>
                     </div>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <input type="hidden" th:name="nip" th:value="${clientNip}" />
+                <div class="col-12">
+                    <input class="btn btn-primary" type="submit" value="Wyślij Odczyt"/>
                 </div>
-            </th:block>
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-            <input type="hidden" th:name="nip" th:value="${clientNip}" />
-            <div class="col-12">
-                <input class="btn btn-primary" type="submit" value="Wyślij Odczyty i utwórz fakturę"/>
-            </div>
-        </form>
+            </form>
+        </th:block>
+
+        <div class="col-12">
+            <form th:attr="hx-post=|/createUtilityInvoice/${clientNip}|" hx-target="#mainContent">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <input class="btn btn-primary" type="submit" value="Wyślij fakturę za ostatni odczyt"/>
+            </form>
+        </div>
 
         <div th:if="${isProductSaved}" th:class="${'alert alert-' + alertSeverity + ' alert-dismissible'}" role="alert">
             <div th:text="${isProductSaved}">alert message</div>

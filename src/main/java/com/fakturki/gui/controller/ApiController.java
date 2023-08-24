@@ -197,4 +197,48 @@ public class ApiController {
         var utilityList = List.of(ProductEnum.PRAD, ProductEnum.WODA);
         return utilityList.stream().map(product -> getLastReading(nip, product)).filter(reading -> reading.getId() != null).toList();
     }
+
+    public List<Invoice> getUtilityInvoicesByNip(String nip) {
+        return apiWithTimeout.post()
+            .uri(uriBuilder -> uriBuilder
+                .path("/getUtilityInvoicesForClient/{nip}")
+                .queryParam("productEnum", ProductEnum.PRAD)
+                .build(nip))
+            .retrieve()
+            .bodyToFlux(Invoice.class)
+            .collectList()
+            .block();
+    }
+
+    public String saveUtilityReading(UtilityReading utilityReading) {
+        String uriPath = "saveUtilityReading";
+        return apiWithTimeout.post()
+            .uri(uriPath)
+            .bodyValue(utilityReading)
+            .exchangeToMono(response -> {
+                    if (response.statusCode().equals(HttpStatus.OK)) {
+                        return response.bodyToMono(String.class);
+                    } else if (response.statusCode().is4xxClientError()) {
+                        return Mono.just("Bad request Error");
+                    } else if (response.statusCode().is5xxServerError()) {
+                        return Mono.just("Server Error");
+                    } else return Mono.just("Other Error");
+                })
+            .block();
+    }
+
+    public String createUtilityInvoice(String nip) {
+        return apiWithTimeout.post()
+            .uri("/createUtilityInvoice/{nip}", nip)
+            .exchangeToMono(response -> {
+                    if (response.statusCode().equals(HttpStatus.OK)) {
+                        return response.bodyToMono(String.class);
+                    } else if (response.statusCode().is4xxClientError()) {
+                        return Mono.just("Bad request Error");
+                    } else if (response.statusCode().is5xxServerError()) {
+                        return Mono.just("Server Error");
+                    } else return Mono.just("Other Error");
+                })
+            .block();
+    }
 }

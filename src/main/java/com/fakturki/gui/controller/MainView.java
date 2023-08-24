@@ -1,5 +1,6 @@
 package com.fakturki.gui.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -122,14 +123,32 @@ public class MainView {
 
     @GetMapping("getUtility/{nip}")
     public String getUtility(@PathVariable String nip, Model model) {
+        model.addAttribute("onlyUtilitiesInvoices", true);
         model.addAttribute("clientNip", nip);
         model.addAttribute("lastReadings", apiController.getLastReadings(nip));
+        model.addAttribute("invoices", apiController.getUtilityInvoicesByNip(nip));
         return "fragments/product :: addUtilityReading"; 
     }
 
     @PostMapping("/submitReadings")
-    public String submitReadings(List<UtilityReading> utilityReadings) {
-        System.out.println(utilityReadings);
+    public String submitReadings(UtilityReading utilityReading, Model model) {
+        System.out.println(utilityReading);
+        var nip = utilityReading.getClientNip();
+        model.addAttribute("onlyUtilitiesInvoices", true);
+        model.addAttribute("response", apiController.saveUtilityReading(utilityReading));
+        model.addAttribute("clientNip", nip);
+        model.addAttribute("lastReadings", apiController.getLastReadings(nip));
+        model.addAttribute("invoices", apiController.getUtilityInvoicesByNip(nip));
+        return "fragments/product :: addUtilityReading"; 
+    }
+
+    @PostMapping("/createUtilityInvoice/{nip}")
+    public String createUtilityInvoice(@PathVariable String nip, Model model) {
+        model.addAttribute("response", apiController.createUtilityInvoice(nip));
+        model.addAttribute("onlyUtilitiesInvoices", true);
+        model.addAttribute("clientNip", nip);
+        model.addAttribute("lastReadings", apiController.getLastReadings(nip));
+        model.addAttribute("invoices", apiController.getUtilityInvoicesByNip(nip));
         return "fragments/product :: addUtilityReading"; 
     }
     
