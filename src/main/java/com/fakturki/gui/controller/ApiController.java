@@ -47,7 +47,7 @@ public class ApiController {
             conn.addHandlerLast(new ReadTimeoutHandler(5000, TimeUnit.MILLISECONDS))
             .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS)));
 
-    WebClient api = WebClient.create("http://localhost:8081");
+    WebClient api = WebClient.create("http://api:8081");
     WebClient apiWithTimeout = WebClient.builder()
         .baseUrl("http://localhost:8081")
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) 
@@ -70,12 +70,6 @@ public class ApiController {
                     return res.createError().flux();
                 }
             });
-
-        // var list = new ArrayList<ClientTable>();
-        // list.add(new ClientTable("name1", "1111111111", "01/07/2023", BigDecimal.ZERO));
-        // list.add(new ClientTable("name2", "2222222222", "01/07/2023", BigDecimal.ONE));
-        // list.add(new ClientTable("name3", "3333333333", "01/07/2023", BigDecimal.ZERO));
-        // return list;
 
         return response.cast(ClientTable.class).collectList().block();
     }
