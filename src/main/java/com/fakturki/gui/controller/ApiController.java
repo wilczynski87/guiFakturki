@@ -1,15 +1,8 @@
 package com.fakturki.gui.controller;
 
-import java.math.BigDecimal;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
-
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,8 +12,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
 import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec;
 import org.springframework.web.reactive.function.client.WebClient.UriSpec;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-
 import com.fakturki.gui.data.Client;
 import com.fakturki.gui.data.ClientTable;
 import com.fakturki.gui.data.Invoice;
@@ -29,7 +20,6 @@ import com.fakturki.gui.data.ProductEnum;
 import com.fakturki.gui.data.UtilityReading;
 
 import io.netty.channel.ChannelOption;
-import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +30,10 @@ import reactor.netty.http.client.HttpClient;
 @Slf4j
 @Controller
 public class ApiController {
+
+    private String baseUrl = "http://localhost:8081";
+    private final String newUrl = "http://172.20.0.5:8081";
+
     HttpClient httpClient = HttpClient.create()
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
         .responseTimeout(Duration.ofMillis(5000))
@@ -47,31 +41,38 @@ public class ApiController {
             conn.addHandlerLast(new ReadTimeoutHandler(5000, TimeUnit.MILLISECONDS))
             .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS)));
 
-    WebClient api = WebClient.create("http://api:8081");
+    WebClient api = WebClient.create("172.20.0.5");
     WebClient apiWithTimeout = WebClient.builder()
-        .baseUrl("http://localhost:8081")
+        .baseUrl(newUrl)
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) 
         .clientConnector(new ReactorClientHttpConnector(httpClient))
         .build();
 
     public List<ClientTable> getClients() {
 
-        UriSpec<RequestBodySpec> uriSpec = api.post();
+        return apiWithTimeout.post()
+            .uri("/clientsTable")
+            .retrieve()
+            .bodyToFlux(ClientTable.class)
+            .collectList()
+            .block();
+
+        // UriSpec<RequestBodySpec> uriSpec = api.post();
         
-        RequestBodySpec bodySpec = uriSpec.uri("/clientsTable");
+        // RequestBodySpec bodySpec = uriSpec.uri("/clientsTable");
 
-        RequestHeadersSpec<?> headersSpec = bodySpec.bodyValue("data");
+        // RequestHeadersSpec<?> headersSpec = bodySpec.bodyValue("data");
 
-        Flux<Object> response = bodySpec.exchangeToFlux(res -> {
-                if (res.statusCode().equals(HttpStatus.OK)) {
-                    return res.bodyToFlux(ClientTable.class);
-                }
-                else {
-                    return res.createError().flux();
-                }
-            });
+        // Flux<Object> response = bodySpec.exchangeToFlux(res -> {
+        //         if (res.statusCode().equals(HttpStatus.OK)) {
+        //             return res.bodyToFlux(ClientTable.class);
+        //         }
+        //         else {
+        //             return res.createError().flux();
+        //         }
+        //     });
 
-        return response.cast(ClientTable.class).collectList().block();
+        // return response.cast(ClientTable.class).collectList().block();
     }
 
     public void sendAllInvoices() {
