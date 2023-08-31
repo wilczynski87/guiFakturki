@@ -9,9 +9,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
-import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec;
-import org.springframework.web.reactive.function.client.WebClient.UriSpec;
 import com.fakturki.gui.data.Client;
 import com.fakturki.gui.data.ClientTable;
 import com.fakturki.gui.data.Invoice;
@@ -23,7 +20,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
@@ -32,7 +28,7 @@ import reactor.netty.http.client.HttpClient;
 public class ApiController {
 
     private String baseUrl = "http://localhost:8081";
-    private final String newUrl = "http://172.20.0.5:8081";
+    private final String containerUrl = "http://api:8081";
 
     HttpClient httpClient = HttpClient.create()
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
@@ -43,7 +39,7 @@ public class ApiController {
 
     WebClient api = WebClient.create("172.20.0.5");
     WebClient apiWithTimeout = WebClient.builder()
-        .baseUrl(newUrl)
+        .baseUrl(containerUrl)
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) 
         .clientConnector(new ReactorClientHttpConnector(httpClient))
         .build();
@@ -56,23 +52,6 @@ public class ApiController {
             .bodyToFlux(ClientTable.class)
             .collectList()
             .block();
-
-        // UriSpec<RequestBodySpec> uriSpec = api.post();
-        
-        // RequestBodySpec bodySpec = uriSpec.uri("/clientsTable");
-
-        // RequestHeadersSpec<?> headersSpec = bodySpec.bodyValue("data");
-
-        // Flux<Object> response = bodySpec.exchangeToFlux(res -> {
-        //         if (res.statusCode().equals(HttpStatus.OK)) {
-        //             return res.bodyToFlux(ClientTable.class);
-        //         }
-        //         else {
-        //             return res.createError().flux();
-        //         }
-        //     });
-
-        // return response.cast(ClientTable.class).collectList().block();
     }
 
     public void sendAllInvoices() {
