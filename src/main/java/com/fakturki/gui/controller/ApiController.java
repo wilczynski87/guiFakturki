@@ -3,6 +3,8 @@ package com.fakturki.gui.controller;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,8 +29,11 @@ import reactor.netty.http.client.HttpClient;
 @Controller
 public class ApiController {
 
-    private String baseUrl = "http://localhost:8081";
-    private final String containerUrl = "http://api:8081";
+    @Value("${api:localhost}")
+    private String myApi;
+
+    @Value(value = "${my.port:8081}")
+    private String myUrl;
 
     HttpClient httpClient = HttpClient.create()
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
@@ -37,27 +42,28 @@ public class ApiController {
             conn.addHandlerLast(new ReadTimeoutHandler(5000, TimeUnit.MILLISECONDS))
             .addHandlerLast(new WriteTimeoutHandler(5000, TimeUnit.MILLISECONDS)));
 
-    WebClient api = WebClient.create("172.20.0.5");
-    WebClient apiWithTimeout = WebClient.builder()
-        .baseUrl(containerUrl)
+    private WebClient webClient() {
+        return WebClient.builder()
+        .baseUrl(String.format("http://%s:%s", myApi, myUrl))
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE) 
-        .clientConnector(new ReactorClientHttpConnector(httpClient))
+        .clientConnector(new ReactorClientHttpConnector(this.httpClient))
         .build();
+    }
 
     public List<ClientTable> getClients() {
-
-        return apiWithTimeout.post()
+        return webClient().post()
             .uri("/clientsTable")
             .retrieve()
             .bodyToFlux(ClientTable.class)
             .collectList()
-            .block();
+            .block()
+            ;
     }
 
     public void sendAllInvoices() {
         System.out.println("Sending invoices: ");
 
-        api.get()
+        webClient().get()
             .uri("/invoicesSending")
             .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .retrieve()
@@ -73,7 +79,7 @@ public class ApiController {
 
     public Client getClient(String nip) {
         Mono<Client> client;
-        var myClient = apiWithTimeout.post()
+        var myClient = webClient().post()
             .uri("/getClient/{nip}", nip)
             .retrieve()
             .bodyToMono(Client.class)
@@ -83,18 +89,21 @@ public class ApiController {
     }
 
     public void sendInvoiceToClient(String nip, String month, String year) {
-        apiWithTimeout.get()
+        webClient().get()
             .uri(uriBuilder -> uriBuilder
-                .path("/sendInvoiceToClient")
+                .path("/???")
                 .queryParam("nip", "{nip}")
                 .queryParam("month", "{month}")
                 .queryParam("year", "{year}")
                 .build(nip, month, year))
-            .retrieve();
+            .retrieve()
+            .bodyToMono(void.class)
+            .block()
+            ;
     }
     
     public List<Product> getProductsByClient(String nip) {
-        return apiWithTimeout.post()
+        return webClient().post()
             .uri("/getProductsByClient/{nip}", nip)
             .retrieve()
             .bodyToFlux(Product.class)
@@ -103,7 +112,7 @@ public class ApiController {
     }
 
     public List<Invoice> getInvoicesByNip(String nip) {
-        return apiWithTimeout.post()
+        return webClient().post()
             .uri("/getInvoicesByNip/{nip}", nip)
             .retrieve()
             .bodyToFlux(Invoice.class)
@@ -112,7 +121,7 @@ public class ApiController {
     }
 
     public String saveNewClient(Client client, boolean isNew) {
-        return apiWithTimeout.post()
+        return webClient().post()
             .uri("/saveClient")
             .bodyValue(client)
             .exchangeToMono(response -> {
@@ -134,7 +143,7 @@ public class ApiController {
         record ProductDto(String clientNip, String productDesc, float unitPrice, float quantity, int vatRate) {}
         var productDto = new ProductDto(product.getNip(), product.getProductEnum().toString(), product.getUnitPrice().floatValue(), product.getQuantity().floatValue(), product.getVatRate());
 
-        return apiWithTimeout.post()
+        return webClient().post()
             .uri("/saveProductTemplate")
             .bodyValue(productDto)
             .exchangeToMono(response -> {
@@ -152,7 +161,7 @@ public class ApiController {
 
     public UtilityReading getLastReading(String nip, ProductEnum product) {
         
-        return apiWithTimeout.post()
+        return webClient().post()
             .uri("/getLastReadingForNip/{nip}/{product}", nip, product)
             .exchangeToMono(response -> {
                 if (response.statusCode().equals(HttpStatus.OK)) {
@@ -173,7 +182,7 @@ public class ApiController {
     }
 
     public List<Invoice> getUtilityInvoicesByNip(String nip) {
-        return apiWithTimeout.post()
+        return webClient().post()
             .uri(uriBuilder -> uriBuilder
                 .path("/getUtilityInvoicesForClient/{nip}")
                 .queryParam("productEnum", ProductEnum.PRAD)
@@ -186,7 +195,7 @@ public class ApiController {
 
     public String saveUtilityReading(UtilityReading utilityReading) {
         String uriPath = "saveUtilityReading";
-        return apiWithTimeout.post()
+        return webClient().post()
             .uri(uriPath)
             .bodyValue(utilityReading)
             .exchangeToMono(response -> {
@@ -202,7 +211,7 @@ public class ApiController {
     }
 
     public String createUtilityInvoice(String nip) {
-        return apiWithTimeout.post()
+        return webClient().post()
             .uri("/createUtilityInvoice/{nip}", nip)
             .exchangeToMono(response -> {
                     if (response.statusCode().equals(HttpStatus.OK)) {

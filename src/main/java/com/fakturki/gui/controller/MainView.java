@@ -1,5 +1,7 @@
 package com.fakturki.gui.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -144,6 +146,14 @@ public class MainView {
         model.addAttribute("lastReadings", apiController.getLastReadings(nip));
         model.addAttribute("invoices", apiController.getUtilityInvoicesByNip(nip));
         return "fragments/product :: addUtilityReading"; 
+    }
+
+    @GetMapping("/sendInvoice/{nip}")
+    public String sendInvoice(@PathVariable String nip, Model model) {
+        apiController.sendInvoiceToClient(nip, String.valueOf(LocalDate.now().getMonthValue()), String.valueOf(LocalDate.now().getYear()));
+        model.addAttribute("client", apiController.getClient(nip));
+        model.addAttribute("invoices", apiController.getInvoicesByNip(nip));
+        return "fragments/client :: clientFaktury";
     }
     
 }

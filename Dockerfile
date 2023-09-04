@@ -11,4 +11,5 @@ COPY mvnw pom.xml ./
 RUN ./mvnw dependency:resolve
 EXPOSE 8083
 COPY src ./src
+ENV API=api
 CMD ["./mvnw", "spring-boot:run"]
